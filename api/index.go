@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/meeptaquelle/backend/config"
-	"github.com/meeptaquelle/backend/internal/server"
+	"github.com/meeptaquelle/backend/server"
 	"github.com/meeptaquelle/backend/storage"
 )
 
