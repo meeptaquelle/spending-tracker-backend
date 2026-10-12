@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"net/http"
 
 	"github.com/meeptaquelle/backend/config"
@@ -26,9 +25,21 @@ func init() {
 
 	// Vercel enforces its own timeout — don't add another one.
 	app = server.Build(cfg, store, false)
-	_ = context.Background
 }
 
+// Handler is the Vercel entrypoint.
+//
+// vercel.json rewrites /api/<anything> to /api?__path=<anything>, because this
+// single function lives at /api. Inside the function the URL path is therefore
+// "/api", not the path the client asked for, so we rebuild it here.
 func Handler(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	if p, ok := q["__path"]; ok {
+		q.Del("__path")
+		r.URL.Path = "/api/" + p[0]
+		r.URL.RawQuery = q.Encode()
+	} else if r.URL.Path == "/api" {
+		r.URL.Path = "/api/"
+	}
 	app.ServeHTTP(w, r)
 }
