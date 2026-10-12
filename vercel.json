@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api?__path=$1" }
-  ]
-} 
+  "builds": [{ "src": "api/index.go", "use": "@vercel/go" }],
+  "routes": [{ "src": "/api/(.*)", "dest": "/api/index.go" }]
+}
